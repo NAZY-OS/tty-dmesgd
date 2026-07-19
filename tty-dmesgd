@@ -11,7 +11,7 @@ set -euo pipefail
 
 TTY_DEV="/dev/tty12"
 # Use -T for human-readable timestamps; there is no --human flag in dmesg.
-DMS_CMD=(dmesg --follow --human -T)
+DMS_CMD=(dmesg --follow-new --human -T)
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Error: run as root." >&2
