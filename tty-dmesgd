@@ -2,16 +2,12 @@
 # Author: NAZY-OS
 # License: MIT
 # Name: tty-dmesgd
-# Version: 1.0.7
+# Version: 1.0.8
 #
 # This script repeatedly runs dmesg in follow mode and redirects its output
 # to /dev/tty12. It requires root permissions. If not run as root, it exits.
 
 set -euo pipefail
-
-TTY_DEV="/dev/tty12"
-# Use -T for human-readable timestamps; there is no --human flag in dmesg.
-DMS_CMD="dmesg --human -T"
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Error: run as root." >&2
@@ -20,14 +16,10 @@ fi
 
 ## MAIN
 
-echo "DMESG INFOS TO: ${TTY_DEV}"
-
-### PRELOOP
-#   sh -c "${DMS_CMD} --follow 2>&1 | tee -a ${TTY_DEV}" &> /var/log/dmesg.log.0
-### LOOP
-
+echo "DMESG INFOS TO: /dev/tty12"
+echo
 
 while true; do
-  sh -c "${DMS_CMD} --follow-new 2>&1 | tee -a ${TTY_DEV}" &>> /var/log/dmesg.log.0
+  sh -c "dmesg --human -T -l 6 -w --color --follow-new < /dev/tty12 > /dev/tty12 2>&1"
   sleep 1
 done
