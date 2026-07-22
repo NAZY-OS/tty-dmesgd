@@ -2,7 +2,7 @@
 # Author: NAZY-OS
 # License: MIT
 # Name: tty-dmesgd
-# Version: 1.0.5
+# Version: 1.0.6
 #
 # This script repeatedly runs dmesg in follow mode and redirects its output
 # to /dev/tty12. It requires root permissions. If not run as root, it exits.
@@ -23,10 +23,11 @@ fi
 echo "DMESG INFOS TO: ${TTY_DEV}"
 
 ### PRELOOP
-   sh -c "${DMS_CMD} --follow 2>&1 | tee -a ${TTY_DEV}" &> /var/log/dmesg.log.0 & 
+   sh -c "${DMS_CMD} --follow 2>&1 | tee -a ${TTY_DEV}" &> /var/log/dmesg.log.0
 ### LOOP
 
-while true; do
 
-  sh -c "${DMS_CMD} --follow-new 2>&1 | tee -a ${TTY_DEV}" &>> /var/log/dmesg.log.0  &
+while true; do
+  sh -c "${DMS_CMD} --follow-new 2>&1 | tee -a ${TTY_DEV}" &>> /var/log/dmesg.log.0
+  sleep 1
 done
