@@ -11,7 +11,7 @@ set -eu
 
 ## CONFIG
 PIDFILE="/var/run/kmsgd.pid"
-TTY="${1:-12}"  # Default to tty12 if no parameter given
+TTY="${2:-11}"  # Default to tty12 if no parameter given
 
 ## MAIN
 echo "Kernel message daemon started (PID $$)"
