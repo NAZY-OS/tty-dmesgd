@@ -13,6 +13,7 @@ set -eu
 NAME="kmsgd"
 DAEMON="/sbin/${NAME}.sh"
 PIDFILE="/var/run/${NAME}.pid"
+DEFAULT_TTY="11"  # Standard-TTY auf 11 gesetzt
 
 ## FUNCTIONS
 check_root() {
@@ -23,7 +24,7 @@ check_root() {
 }
 
 start_daemon() {
-    TTY="${2:-11}"  # Default to tty11 if no parameter given
+    TTY="${1:-${DEFAULT_TTY}}"  # Standard-TTY aus DEFAULT_TTY
 
     if [ -f "${PIDFILE}" ]; then
         PID=$(cat "${PIDFILE}")
@@ -85,7 +86,7 @@ case "$1" in
         ;;
     *)
         echo "Usage: $0 {start [tty]}|{stop}|{restart [tty]}"
-        echo "Default TTY: 11"
+        echo "Default TTY: ${DEFAULT_TTY}"
         exit 1
         ;;
 esac
