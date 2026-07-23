@@ -1,7 +1,7 @@
 #!/bin/sh
 # Author: NAZY-OS
 # License: MIT
-# Name: tty-dmesgd
+# Name: kmsgd.sh
 # Version: 1.0.9
 #
 # Kernel message daemon (main service)
