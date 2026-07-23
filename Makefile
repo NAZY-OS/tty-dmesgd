@@ -4,6 +4,8 @@
 PREFIX ?= /usr/local
 SBIN_DIR ?= $(PREFIX)/sbin
 VAR_RUN_DIR ?= /var/run
+RCONF_DIR ?= /etc/rc.d
+SYSTEMD_DIR ?= /etc/systemd/system
 
 NAME = kmsgd
 
@@ -25,6 +27,8 @@ uninstall: check_root
 	@rm -f $(SBIN_DIR)/$(NAME)
 	@rm -f $(SBIN_DIR)/$(NAME).sh
 	@rm -f $(VAR_RUN_DIR)/$(NAME).pid
+	@rm -f $(RCONF_DIR)/$(NAME)  # Entfernt BSD-Init-Skript
+	@rm -f $(SYSTEMD_DIR)/$(NAME).service  # Entfernt systemd-Service
 	@echo "Uninstall complete"
 
 clean:
