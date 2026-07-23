@@ -1,0 +1,91 @@
+#!/bin/sh
+# Author: NAZY-OS
+# License: MIT
+# Name: kmsgd
+# Version: 1.0.9
+#
+# Kernel message daemon controller
+# KISS style, compatible with Linux and BSD
+
+set -eu
+
+## CONFIG
+NAME="kmsgd"
+DAEMON="/sbin/${NAME}.sh"
+PIDFILE="/var/run/${NAME}.pid"
+
+## FUNCTIONS
+check_root() {
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "ERROR: This daemon must be run as root" >&2
+        exit 1
+    fi
+}
+
+start_daemon() {
+    TTY="${1:-12}"  # Default to tty12 if no parameter given
+
+    if [ -f "${PIDFILE}" ]; then
+        PID=$(cat "${PIDFILE}")
+        if kill -0 "${PID}" 2>/dev/null; then
+            echo "Daemon already running (PID ${PID})"
+            return 0
+        else
+            echo "Removing stale PID file"
+            rm -f "${PIDFILE}"
+        fi
+    fi
+
+    echo "Starting ${NAME} daemon on /dev/tty${TTY}..."
+    "${DAEMON}" "${TTY}" >/dev/null 2>&1 &
+    echo $! > "${PIDFILE}"
+    echo "Started (PID $!)"
+}
+
+stop_daemon() {
+    if [ ! -f "${PIDFILE}" ]; then
+        echo "Daemon not running"
+        return 0
+    fi
+
+    PID=$(cat "${PIDFILE}")
+    if ! kill -0 "${PID}" 2>/dev/null; then
+        echo "Removing stale PID file"
+        rm -f "${PIDFILE}"
+        return 0
+    fi
+
+    echo "Stopping ${NAME} daemon..."
+    kill "${PID}"
+    rm -f "${PIDFILE}"
+    echo "Stopped"
+}
+
+restart_daemon() {
+    stop_daemon
+    sleep 1
+    start_daemon "$@"
+}
+
+## MAIN
+case "$1" in
+    start)
+        check_root
+        shift
+        start_daemon "$@"
+        ;;
+    stop)
+        check_root
+        stop_daemon
+        ;;
+    restart)
+        check_root
+        shift
+        restart_daemon "$@"
+        ;;
+    *)
+        echo "Usage: $0 {start [tty]}|{stop}|{restart [tty]}"
+        echo "Default TTY: 12"
+        exit 1
+        ;;
+esac
