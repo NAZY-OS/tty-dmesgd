@@ -82,7 +82,7 @@ install_init_bsd() {
 
     echo "Installing BSD-style init script..."
     [ -f "${RCONF_DIR}/${NAME}" ] || {
-        install -m 755 kmsgd.init "${RCONF_DIR}/"
+        install -m 755 kmsgd.init "${RCONF_DIR}/${NAME}"
         echo "To enable and start:"
         echo "  /etc/rc.d/${NAME} enable"
         echo "  /etc/rc.d/${NAME} start"
